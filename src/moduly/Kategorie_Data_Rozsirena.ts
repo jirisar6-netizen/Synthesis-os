@@ -1,19 +1,7 @@
 export const ZAKLADNI_20_SLOV: Record<string, string[]> = {
   potreby: ['pít', 'jíst', 'záchod', 'spát', 'pomoc', 'umyvadlo', 'koupat', 'zuby', 'obléknout', 'svléknout', 'teplo', 'zima', 'odpočinek', 'léky', 'brýle', 'boty', 'čepice', 'světlo', 'ticho', 'otevřít'],
-  
-  emoce: ['veselý', 'smutný', 'unavený', 'bolest', 'strach', 'zlost', 'překvapení', 'klid', 'nuda', 'hlad', 'žízeň', 'zima', 'horko', 'špatně', 'dobře', 'stydět se', 'smát se', 'plakat', 'obejmout', 'pusu'],
-  
-  aktivity: [
-    'hrát si', 'venku', 'voda', 'televize', 'auto', 
-    'kreslit', 'číst', 'kostky', 'procházka', 'hřiště', 
-    'poslouchat hudbu', 'skládat', 'běhat', 'kolo', 'škola', 
-    'úklid', 'zpívat', 'skákat', 'plavat', 'tablet'
-  ],
-  
-  lidi: [
-    'máma', 'táta', 'brácha', 'babička', 'děda', 
-    'paní učitelka', 'doktor', 'kamarád', 'teta', 'strejda', 
-    'Jiřík', 'Štěpánek', 'paní doktorka', 'sestřička', 'policie', 
-    'hasiči', 'pošťák', 'soused', 'návštěva', 'já'
-  ]
+  jidlo: ['jablko', 'banán', 'jogurt', 'polévka', 'maso', 'chleba', 'rohlík', 'mléko', 'voda', 'džus', 'sušenka', 'čokoláda', 'zmrzlina', 'těstoviny', 'rýže', 'brambory', 'zelenina', 'ovoce', 'sýr', 'šunka'],
+  mista: ['domov', 'škola', 'hřiště', 'obchod', 'park', 'les', 'bazén', 'kino', 'divadlo', 'nemocnice', 'zahrada', 'ulice', 'zastávka', 'nádraží', 'letiště', 'restaurace', 'cukrárna', 'knihovna', 'pošta', 'banka'],
+  hracky: ['auto', 'kostky', 'tablet', 'míč', 'panenka', 'plyšák', 'puzzle', 'kniha', 'pastelky', 'papír', 'nůžky', 'lepidlo', 'modelína', 'bublifuk', 'pískoviště', 'skluzavka', 'houpačka', 'trampolína', 'kolo', 'koloběžka'],
+  zdravi: ['břicho', 'hlava', 'bolí', 'náplast', 'teploměr', 'sirup', 'kašel', 'rýma', 'doktor', 'zubař', 'oko', 'ucho', 'nos', 'pusa', 'ruka', 'noha', 'záda', 'krk', 'zub', 'krev']
 };

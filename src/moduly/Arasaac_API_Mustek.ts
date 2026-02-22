@@ -6,31 +6,29 @@ export interface CardData {
   image: string;
 }
 
-/**
- * Vyhledá piktogram v češtině a vrátí jeho data.
- * Limit 60 řádků dodržen.
- */
 export const fetchCommunicationCard = async (text: string): Promise<CardData | null> => {
   try {
-    // 1. Vyhledání ID piktogramu v češtině (cs)
-    const searchUrl = `${API_BASE}/cs/search/${encodeURIComponent(text)}`;
+    // Přidáváme fallback pro vyhledávání
+    const searchUrl = `${API_BASE}/cs/search/${encodeURIComponent(text.toLowerCase())}`;
     const response = await fetch(searchUrl);
     
-    if (!response.ok) return null;
+    if (!response.ok) throw new Error('API_OFFLINE');
     const data = await response.json();
 
     if (data && data.length > 0) {
-      const bestMatch = data[0];
+      const id = data[0]._id;
+      // Ověření, že URL obrázku je validní HTTPS
+      const imageUrl = `https://api.arasaac.org/api/pictograms/${id}`;
+      
       return {
-        id: bestMatch._id,
+        id: id,
         label: text,
-        // 2. Sestavení URL pro stažení piktogramu
-        image: `https://api.arasaac.org/api/pictograms/${bestMatch._id}`
+        image: imageUrl
       };
     }
     return null;
   } catch (error) {
-    console.error("AISS-OS ERROR: API_FAILURE", error);
+    console.error("AISS-OS API FAIL:", error);
     return null;
   }
 };

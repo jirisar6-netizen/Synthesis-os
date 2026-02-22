@@ -9,10 +9,21 @@ export const Kategorie_Detail: React.FC<{ id: string, onBack: () => void, onAddT
   const [selectedCard, setSelectedCard] = useState<CardData | null>(null);
 
   useEffect(() => {
-    const slova = ZAKLADNI_20_SLOV[id] || [];
-    Promise.all(slova.map(s => fetchCommunicationCard(s))).then(res => {
-      setKarty(res.filter((k): k is CardData => k !== null));
-    });
+    let isMounted = true;
+    const nacti = async () => {
+      const slova = ZAKLADNI_20_SLOV[id] || [];
+      const nacteneKarty = [];
+      
+      for (const slovo of slova) {
+        const karta = await fetchCommunicationCard(slovo);
+        if (karta) nacteneKarty.push(karta);
+      }
+      
+      if (isMounted) setKarty(nacteneKarty);
+    };
+    
+    nacti();
+    return () => { isMounted = false; };
   }, [id]);
 
   return (

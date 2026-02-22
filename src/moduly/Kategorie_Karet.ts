@@ -6,28 +6,9 @@ export interface Kategorie {
 }
 
 export const SEZNAM_KATEGORII: Kategorie[] = [
-  {
-    id: 'potreby',
-    nazev: 'Základní potřeby',
-    barva: '#e95420', // Ubuntu Orange
-    zakladniSlova: ['pít', 'jíst', 'záchod', 'spát', 'pomoc']
-  },
-  {
-    id: 'emoce',
-    nazev: 'Pocity',
-    barva: '#3498db', // Modrá
-    zakladniSlova: ['veselý', 'smutný', 'unavený', 'bolest', 'strach']
-  },
-  {
-    id: 'aktivity',
-    nazev: 'Činnosti',
-    barva: '#2ecc71', // Zelená
-    zakladniSlova: ['hrát si', 'venku', 'voda', 'televize', 'auto']
-  },
-  {
-    id: 'lidi',
-    nazev: 'Lidé',
-    barva: '#f1c40f', // Žlutá
-    zakladniSlova: ['máma', 'táta', 'brácha', 'babička', 'děda']
-  }
+  { id: 'potreby', nazev: 'Potřeby', barva: '#e95420', zakladniSlova: ['pít', 'jíst', 'záchod', 'spát', 'pomoc'] },
+  { id: 'jidlo', nazev: 'Jídlo', barva: '#f39c12', zakladniSlova: ['jablko', 'banán', 'jogurt', 'polévka', 'maso'] },
+  { id: 'mista', nazev: 'Místa', barva: '#9b59b6', zakladniSlova: ['domov', 'škola', 'hřiště', 'obchod'] },
+  { id: 'hracky', nazev: 'Zábava', barva: '#e74c3c', zakladniSlova: ['auto', 'kostky', 'tablet', 'míč'] },
+  { id: 'zdravi', nazev: 'Zdraví', barva: '#c0392b', zakladniSlova: ['břicho', 'hlava', 'bolí', 'náplast'] }
 ];
