@@ -3,8 +3,9 @@ import { SEZNAM_KATEGORII } from './moduly/Kategorie_Karet';
 import { Kategorie_Detail } from './moduly/Kategorie_Detail';
 import { Paticka_Systemu } from './moduly/Paticka_Systemu';
 import { CardData } from './moduly/Arasaac_API_Mustek';
-import { stylListy, prehrajVetu } from './moduly/Vetna_Lista_Logika';
 import { odemkniAudio } from './moduly/Hlasovy_Vystup';
+import { SYSTEM_VERSION, verzeStyle } from './moduly/Verze_Systemu';
+import { Vetna_Lista_Komponenta } from './moduly/Vetna_Lista_Komponenta';
 
 const App: React.FC = () => {
   const [vybranaKat, setVybranaKat] = useState<string | null>(null);
@@ -20,19 +21,15 @@ const App: React.FC = () => {
 
   return (
     <div style={layoutStyle}>
-      <div style={stylListy}>
-        {vetnaLista.map((k, index) => (
-          <img key={index} src={k.image} style={{ height: '70px', borderRadius: '5px' }} />
-        ))}
-        {vetnaLista.length > 0 && (
-          <div style={{ display: 'flex', gap: '5px', marginLeft: 'auto', alignItems: 'center' }}>
-            <button onClick={() => prehrajVetu(vetnaLista)} style={playBtn}>▶️</button>
-            <button onClick={vymazVetu} style={clearBtn}>❌</button>
-          </div>
-        )}
-      </div>
+      {/* Větná lišta se zobrazí JEN v detailu kategorie */}
+      {vybranaKat && (
+        <Vetna_Lista_Komponenta 
+          karty={vetnaLista} 
+          onClear={vymazVetu} 
+        />
+      )}
 
-      <div style={{ flex: 1 }}>
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
         {!vybranaKat ? (
           <div style={gridStyle}>
             <h1 style={headerStyle}>AISS ROZCESTNÍK</h1>
@@ -50,11 +47,15 @@ const App: React.FC = () => {
           <Kategorie_Detail 
             id={vybranaKat} 
             onBack={() => setVybranaKat(null)} 
-            onAddCard={pridejDoVety}
+            onAddToSentence={pridejDoVety}
           />
         )}
       </div>
+      
       <Paticka_Systemu />
+      <div style={verzeStyle}>
+        AISS-OS {SYSTEM_VERSION}
+      </div>
     </div>
   );
 };
@@ -71,14 +72,6 @@ const headerStyle: React.CSSProperties = { color: '#e95420', textAlign: 'center'
 const buttonStyle: React.CSSProperties = { 
   padding: '25px', borderRadius: '15px', border: 'none', color: 'white', 
   fontWeight: 'bold', fontSize: '1.2rem', boxShadow: '0 4px 10px rgba(0,0,0,0.3)' 
-};
-
-const playBtn: React.CSSProperties = {
-  background: '#2ecc71', border: 'none', borderRadius: '10px', padding: '10px', fontSize: '1.5rem', cursor: 'pointer'
-};
-
-const clearBtn: React.CSSProperties = {
-  background: '#e74c3c', border: 'none', borderRadius: '10px', padding: '10px', fontSize: '1.5rem', cursor: 'pointer'
 };
 
 export default App;

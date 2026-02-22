@@ -17,12 +17,17 @@ export const Paticka_Systemu: React.FC = () => {
     fontWeight: 'bold'
   };
 
+  const subStyle: React.CSSProperties = {
+    opacity: 0.7,
+    fontSize: '0.75rem',
+    marginTop: '10px'
+  };
+
   return (
     <footer style={footerStyle}>
-      <p>Vyrobil <span style={highlightStyle}>Jiří Šár</span> pro <span style={highlightStyle}>Malého Daniela</span> a také pro všechny děti.</p>
-      <p style={{ opacity: 0.7, fontSize: '0.75rem', marginTop: '10px' }}>
-        Navrženo podle mezinárodních standardů AAC a definic pro autisty určených profesionály. 
-        Využívá certifikovanou databázi piktogramů ARASAAC.
+      <p>Vyrobil <span style={highlightStyle}>Jiří Šár</span> pro <span style={highlightStyle}>malého Daniela</span> a také pro všechny děti.</p>
+      <p style={subStyle}>
+        Navrženo podle mezinárodních standardů AAC a definic pro autisty určených profesionály.
       </p>
     </footer>
   );
