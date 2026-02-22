@@ -4,7 +4,7 @@ import { fetchCommunicationCard, CardData } from './Arasaac_API_Mustek';
 import { ZAKLADNI_20_SLOV } from './Kategorie_Data_Rozsirena';
 import { Modalni_Nahled } from './Modalni_Nahled';
 
-export const Kategorie_Detail: React.FC<{ id: string, onBack: () => void }> = ({ id, onBack }) => {
+export const Kategorie_Detail: React.FC<{ id: string, onBack: () => void, onAddCard: (k: CardData) => void }> = ({ id, onBack, onAddCard }) => {
   const [karty, setKarty] = useState<CardData[]>([]);
   const [selectedCard, setSelectedCard] = useState<CardData | null>(null);
 
@@ -26,11 +26,18 @@ export const Kategorie_Detail: React.FC<{ id: string, onBack: () => void }> = ({
               <img src={k.image} alt={k.label} style={{ width: '100px' }} />
               <p style={{ fontWeight: 'bold', color: '#300a24', margin: '5px 0 0' }}>{k.label}</p>
             </div>
+            
             {/* Tlačítko lupy = ZVĚTŠENÍ */}
             <button 
               onClick={() => setSelectedCard(k)}
               style={zoomIconStyle}
             > 🔍 </button>
+
+            {/* Tlačítko plus = PŘIDAT DO VĚTY */}
+            <button 
+              onClick={() => onAddCard(k)}
+              style={addButtonStyle}
+            > + </button>
           </div>
         ))}
       </div>
@@ -53,6 +60,12 @@ const zoomIconStyle: React.CSSProperties = {
   position: 'absolute', top: '5px', right: '5px', background: '#e95420',
   border: 'none', borderRadius: '50%', color: 'white', cursor: 'pointer',
   width: '30px', height: '30px', display: 'flex', alignItems: 'center', justifyContent: 'center'
+};
+
+const addButtonStyle: React.CSSProperties = {
+  position: 'absolute', bottom: '5px', right: '5px', background: '#2ecc71',
+  border: 'none', borderRadius: '5px', color: 'white', cursor: 'pointer',
+  padding: '5px 10px', fontWeight: 'bold'
 };
 
 const cardWrapperStyle: React.CSSProperties = { 
