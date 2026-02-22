@@ -4,6 +4,7 @@ import { Kategorie_Detail } from './moduly/Kategorie_Detail';
 import { Paticka_Systemu } from './moduly/Paticka_Systemu';
 import { CardData } from './moduly/Arasaac_API_Mustek';
 import { stylListy, prehrajVetu } from './moduly/Vetna_Lista_Logika';
+import { odemkniAudio } from './moduly/Hlasovy_Vystup';
 
 const App: React.FC = () => {
   const [vybranaKat, setVybranaKat] = useState<string | null>(null);
@@ -38,7 +39,7 @@ const App: React.FC = () => {
             {SEZNAM_KATEGORII.map(kat => (
               <button 
                 key={kat.id} 
-                onClick={() => setVybranaKat(kat.id)}
+                onClick={() => { odemkniAudio(); setVybranaKat(kat.id); }}
                 style={{ ...buttonStyle, backgroundColor: kat.barva }}
               >
                 {kat.nazev.toUpperCase()}
