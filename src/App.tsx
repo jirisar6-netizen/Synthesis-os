@@ -1,57 +1,51 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { SEZNAM_KATEGORII } from './moduly/Kategorie_Karet';
-import { generujKategorii } from './moduly/Generator_Karet';
-import { Kategorie_Sekce } from './moduly/Kategorie_Sekce';
-import { CardData } from './moduly/Arasaac_API_Mustek';
+import { Kategorie_Detail } from './moduly/Kategorie_Detail';
+import { Paticka_Systemu } from './moduly/Paticka_Systemu';
 
 const App: React.FC = () => {
-  const [data, setData] = useState<Record<string, CardData[]>>({});
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const nactiVse = async () => {
-      const vysledky: Record<string, CardData[]> = {};
-      for (const kat of SEZNAM_KATEGORII) {
-        vysledky[kat.id] = await generujKategorii(kat.id);
-      }
-      setData(vysledky);
-      setLoading(false);
-    };
-    nactiVse();
-  }, []);
-
-  if (loading) return <div style={loadingStyle}>AISS-OS: NAČÍTÁNÍ API...</div>;
+  const [vybranaKat, setVybranaKat] = useState<string | null>(null);
 
   return (
-    <div style={containerStyle}>
-      <header style={headerStyle}>AISS KOMUNIKÁTOR</header>
-      <div style={scrollAreaStyle}>
-        {SEZNAM_KATEGORII.map(kat => (
-          <Kategorie_Sekce 
-            key={kat.id} 
-            nazev={kat.nazev} 
-            barva={kat.barva} 
-            karty={data[kat.id] || []} 
+    <div style={layoutStyle}>
+      <div style={{ flex: 1 }}>
+        {!vybranaKat ? (
+          <div style={gridStyle}>
+            <h1 style={headerStyle}>AISS ROZCESTNÍK</h1>
+            {SEZNAM_KATEGORII.map(kat => (
+              <button 
+                key={kat.id} 
+                onClick={() => setVybranaKat(kat.id)}
+                style={{ ...buttonStyle, backgroundColor: kat.barva }}
+              >
+                {kat.nazev.toUpperCase()}
+              </button>
+            ))}
+          </div>
+        ) : (
+          <Kategorie_Detail 
+            id={vybranaKat} 
+            onBack={() => setVybranaKat(null)} 
           />
-        ))}
+        )}
       </div>
+      <Paticka_Systemu />
     </div>
   );
 };
 
-// --- STYLY (Ubuntu Glassmorphism) ---
-const containerStyle: React.CSSProperties = {
-  backgroundColor: '#300a24', minHeight: '100vh', color: 'white', padding: '15px'
+const layoutStyle: React.CSSProperties = { 
+  backgroundColor: '#300a24', 
+  minHeight: '100vh', 
+  padding: '10px',
+  display: 'flex',
+  flexDirection: 'column'
 };
-const headerStyle: React.CSSProperties = {
-  fontSize: '1.2rem', fontWeight: 'bold', color: '#e95420', textAlign: 'center', marginBottom: '20px'
-};
-const scrollAreaStyle: React.CSSProperties = {
-  height: 'calc(100vh - 80px)', overflowY: 'auto', paddingBottom: '50px'
-};
-const loadingStyle: React.CSSProperties = {
-  backgroundColor: '#300a24', height: '100vh', display: 'flex', 
-  justifyContent: 'center', alignItems: 'center', color: '#e95420'
+const gridStyle: React.CSSProperties = { display: 'flex', flexDirection: 'column', gap: '15px', paddingTop: '40px' };
+const headerStyle: React.CSSProperties = { color: '#e95420', textAlign: 'center', marginBottom: '20px' };
+const buttonStyle: React.CSSProperties = { 
+  padding: '25px', borderRadius: '15px', border: 'none', color: 'white', 
+  fontWeight: 'bold', fontSize: '1.2rem', boxShadow: '0 4px 10px rgba(0,0,0,0.3)' 
 };
 
 export default App;
