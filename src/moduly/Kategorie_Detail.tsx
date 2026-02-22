@@ -30,8 +30,8 @@ export const Kategorie_Detail: React.FC<{ id: string, onBack: () => void, onAddT
     <div>
       <button onClick={onBack} style={backButtonStyle}>← ZPĚT</button>
       <div style={cardsGridStyle}>
-        {karty.map(k => (
-          <div key={k.id} style={cardWrapperStyle}>
+        {karty.map((k, index) => (
+          <div key={`${k.id}-${index}`} style={cardWrapperStyle}>
             {/* Klik na obrázek = MLUVÍ */}
             <div onClick={() => mluv(k.label)} style={{ textAlign: 'center', cursor: 'pointer' }}>
               <img src={k.image} alt={k.label} style={{ width: '100px' }} />
