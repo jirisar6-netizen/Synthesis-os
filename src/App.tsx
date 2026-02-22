@@ -7,14 +7,17 @@ import { mluv, odemkniAudio } from './moduly/Hlasovy_Vystup';
 import { SYSTEM_VERSION, verzeStyle } from './moduly/Verze_Systemu';
 import { Vetna_Lista_Komponenta } from './moduly/Vetna_Lista_Komponenta';
 import { Horni_Lista } from './moduly/Horni_Lista';
+import { gridResponzivniStyle } from './moduly/Layout_Engine';
+import { Informace_Projektu } from './moduly/Informace_Projektu';
 
 const App: React.FC = () => {
   const [vybranaKat, setVybranaKat] = useState<string | null>(null);
   const [vetnaLista, setVetnaLista] = useState<CardData[]>([]);
   const [tmavyRezim, setTmavyRezim] = useState(true);
   const [showMenu, setShowMenu] = useState(false);
+  const [showInfo, setShowInfo] = useState(false);
 
-  const aktualniBarvaPozadi = tmavyRezim ? '#300a24' : '#1a1a1a';
+  const aktualniBarvaPozadi = tmavyRezim ? '#300a24' : '#1A1A1A';
   const akcent = tmavyRezim ? '#e95420' : '#3498db';
 
   const pridejDoVety = (karta: CardData) => {
@@ -27,7 +30,11 @@ const App: React.FC = () => {
 
   return (
     <div style={{ ...layoutStyle, backgroundColor: aktualniBarvaPozadi }}>
-      <Horni_Lista onMenuClick={() => setShowMenu(!showMenu)} accentColor={akcent} />
+      <Horni_Lista 
+        onMenuClick={() => setShowMenu(!showMenu)} 
+        onInfoClick={() => setShowInfo(true)}
+        accentColor={akcent} 
+      />
       
       {showMenu && (
         <div style={menuOverlayStyle}>
@@ -36,12 +43,17 @@ const App: React.FC = () => {
             <button onClick={() => setTmavyRezim(!tmavyRezim)} style={{ ...menuBtnStyle, background: akcent }}>
               🎨 Styl: {tmavyRezim ? 'Ubuntu Purple' : 'Deep Night'}
             </button>
+            <button onClick={() => { setShowInfo(true); setShowMenu(false); }} style={{ ...menuBtnStyle, background: '#555', marginTop: '10px' }}>
+              ℹ️ O PROJEKTU
+            </button>
             <button onClick={() => setShowMenu(false)} style={{ ...menuBtnStyle, background: '#777', marginTop: '10px' }}>
               ZAVŘÍT
             </button>
           </div>
         </div>
       )}
+
+      {showInfo && <Informace_Projektu onClose={() => setShowInfo(false)} />}
 
       {/* Větná lišta se zobrazí JEN v detailu kategorie */}
       {vybranaKat && (
@@ -55,7 +67,7 @@ const App: React.FC = () => {
         {!vybranaKat ? (
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
             <h1 style={{ ...headerStyle, color: akcent }}>AISS ROZCESTNÍK</h1>
-            <div style={gridStyle}>
+            <div style={gridResponzivniStyle}>
               {SEZNAM_KATEGORII.map(kat => (
                 <button 
                   key={kat.id} 
@@ -102,15 +114,8 @@ const contentStyle: React.CSSProperties = {
   display: 'flex',
   flexDirection: 'column'
 };
-const gridStyle: React.CSSProperties = { 
-  display: 'grid', 
-  gridTemplateColumns: '1fr 1fr', // Dva sloupce vedle sebe
-  gap: '12px', 
-  padding: '10px',
-  paddingTop: '20px' 
-};
 
-const headerStyle: React.CSSProperties = { color: '#e95420', textAlign: 'center', marginBottom: '20px' };
+const headerStyle: React.CSSProperties = { color: '#e95420', textAlign: 'center', marginBottom: '20px', fontSize: 'clamp(1.5rem, 5vw, 2.5rem)', fontWeight: '800' };
 
 const compactButtonStyle: React.CSSProperties = { 
   padding: '20px 10px', 
@@ -118,7 +123,7 @@ const compactButtonStyle: React.CSSProperties = {
   border: 'none', 
   color: 'white', 
   fontWeight: 'bold', 
-  fontSize: '0.9rem', // Menší písmo pro lepší usazení textu
+  fontSize: 'clamp(0.8rem, 2.5vw, 1.1rem)',
   boxShadow: '0 4px 8px rgba(0,0,0,0.3)',
   display: 'flex',
   alignItems: 'center',
@@ -135,8 +140,8 @@ const quickActionArea: React.CSSProperties = {
   marginTop: '10px'
 };
 
-const yesBtn: React.CSSProperties = { flex: 1, padding: '25px', background: '#2ecc71', color: 'white', borderRadius: '15px', fontWeight: 'bold', border: 'none', fontSize: '1.2rem', cursor: 'pointer' };
-const noBtn: React.CSSProperties = { flex: 1, padding: '25px', background: '#e74c3c', color: 'white', borderRadius: '15px', fontWeight: 'bold', border: 'none', fontSize: '1.2rem', cursor: 'pointer' };
+const yesBtn: React.CSSProperties = { flex: 1, padding: '25px', background: '#27AE60', color: 'white', borderRadius: '15px', fontWeight: 'bold', border: 'none', fontSize: 'clamp(1rem, 3vw, 1.4rem)', cursor: 'pointer' };
+const noBtn: React.CSSProperties = { flex: 1, padding: '25px', background: '#C0392B', color: 'white', borderRadius: '15px', fontWeight: 'bold', border: 'none', fontSize: 'clamp(1rem, 3vw, 1.4rem)', cursor: 'pointer' };
 
 const menuOverlayStyle: React.CSSProperties = {
   position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
