@@ -1,30 +1,57 @@
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- */
-
-import React from 'react';
-import { G_Sync_Provider } from './moduly/G_Sync_Synchronizace';
+import React, { useEffect, useState } from 'react';
+import { SEZNAM_KATEGORII } from './moduly/Kategorie_Karet';
+import { generujKategorii } from './moduly/Generator_Karet';
+import { Kategorie_Sekce } from './moduly/Kategorie_Sekce';
+import { CardData } from './moduly/Arasaac_API_Mustek';
 
 const App: React.FC = () => {
+  const [data, setData] = useState<Record<string, CardData[]>>({});
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const nactiVse = async () => {
+      const vysledky: Record<string, CardData[]> = {};
+      for (const kat of SEZNAM_KATEGORII) {
+        vysledky[kat.id] = await generujKategorii(kat.id);
+      }
+      setData(vysledky);
+      setLoading(false);
+    };
+    nactiVse();
+  }, []);
+
+  if (loading) return <div style={loadingStyle}>AISS-OS: NAČÍTÁNÍ API...</div>;
+
   return (
-    <G_Sync_Provider>
-      <div className="min-h-screen bg-[#300a24] flex flex-col items-center justify-center p-5 text-white font-sans">
-        <div className="bg-[#e95420]/10 backdrop-blur-md rounded-2xl border border-[#e95420]/30 p-8 w-full max-w-[350px] text-center shadow-[0_8px_32px_0_rgba(0,0,0,0.37)]">
-          <h1 className="text-[#e95420] text-3xl font-bold mb-2.5">AISS-OS</h1>
-          <p className="text-sm opacity-80">
-            Systémová Správa Modulů 2026
-          </p>
-          <hr className="border-t border-[#e95420]/50 my-5" />
-          <div className="text-xs text-left space-y-1">
-            <p>STAV: INICIALIZACE...</p>
-            <p>HW: Xiaomi 13T Pro OK</p>
-            <p>REFRESH: 144Hz READY</p>
-          </div>
-        </div>
+    <div style={containerStyle}>
+      <header style={headerStyle}>AISS KOMUNIKÁTOR</header>
+      <div style={scrollAreaStyle}>
+        {SEZNAM_KATEGORII.map(kat => (
+          <Kategorie_Sekce 
+            key={kat.id} 
+            nazev={kat.nazev} 
+            barva={kat.barva} 
+            karty={data[kat.id] || []} 
+          />
+        ))}
       </div>
-    </G_Sync_Provider>
+    </div>
   );
+};
+
+// --- STYLY (Ubuntu Glassmorphism) ---
+const containerStyle: React.CSSProperties = {
+  backgroundColor: '#300a24', minHeight: '100vh', color: 'white', padding: '15px'
+};
+const headerStyle: React.CSSProperties = {
+  fontSize: '1.2rem', fontWeight: 'bold', color: '#e95420', textAlign: 'center', marginBottom: '20px'
+};
+const scrollAreaStyle: React.CSSProperties = {
+  height: 'calc(100vh - 80px)', overflowY: 'auto', paddingBottom: '50px'
+};
+const loadingStyle: React.CSSProperties = {
+  backgroundColor: '#300a24', height: '100vh', display: 'flex', 
+  justifyContent: 'center', alignItems: 'center', color: '#e95420'
 };
 
 export default App;
