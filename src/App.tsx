@@ -11,6 +11,7 @@ import { gridResponzivniStyle } from './moduly/Layout_Engine';
 import { Informace_Projektu } from './moduly/Informace_Projektu';
 import { ziskejAktualniFaziDne, seradKategoriePodleCasu } from './moduly/Denni_Rytmus_Logika';
 import { Historie_Zmen_Komponenta } from './moduly/Historie_Zmen_Komponenta';
+import { BRAND } from './moduly/Konfigurace_Brandu';
 
 const App: React.FC = () => {
   const [vybranaKat, setVybranaKat] = useState<string | null>(null);
@@ -90,7 +91,7 @@ const App: React.FC = () => {
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
             {renderRytmusZona()}
             
-            <h1 style={{ ...headerStyle, color: akcent }}>AISS ROZCESTNÍK</h1>
+            <h1 style={{ ...headerStyle, color: akcent }}>{BRAND.jmeno.toUpperCase()} ROZCESTNÍK</h1>
             
             <main style={gridResponzivniStyle}>
               {zobrazeneKategorie.map(kat => (
@@ -128,7 +129,7 @@ const App: React.FC = () => {
       
       <Paticka_Systemu />
       <div style={verzeStyle}>
-        AISS-OS {SYSTEM_VERSION}
+        {BRAND.jmeno} {BRAND.verze}
       </div>
     </div>
   );

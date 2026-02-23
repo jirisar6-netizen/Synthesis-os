@@ -1,10 +1,14 @@
 import React from 'react';
+import { BRAND } from './Konfigurace_Brandu';
 
 export const Horni_Lista: React.FC<{ onMenuClick: () => void, onInfoClick: () => void, onHistoryClick: () => void, accentColor?: string }> = ({ onMenuClick, onInfoClick, onHistoryClick, accentColor }) => {
   return (
-    <div style={headerWrapper}>
-      <span style={{ ...logoStyle, color: accentColor || '#e95420' }}>AISS-OS <small style={{fontSize: '0.6rem'}}>B0.1.6</small></span>
-      <div style={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
+    <div style={headerStyle}>
+      <div style={brandContainer}>
+        <span style={{ ...piktosTitle, color: accentColor || '#e95420' }}>PIKTOS</span>
+        <span style={studioSubtitle}>by Synthesis studio</span>
+      </div>
+      <div style={iconGroup}>
         <button 
           onClick={onHistoryClick} 
           style={{ background: 'none', border: 'none', color: accentColor || '#e95420', fontSize: '1.3rem', cursor: 'pointer' }}
@@ -25,11 +29,38 @@ export const Horni_Lista: React.FC<{ onMenuClick: () => void, onInfoClick: () =>
   );
 };
 
-const headerWrapper: React.CSSProperties = {
+const headerStyle: React.CSSProperties = {
   display: 'flex', justifyContent: 'space-between', alignItems: 'center',
   padding: '10px 15px', background: 'rgba(0,0,0,0.2)', backdropFilter: 'blur(5px)'
 };
-const logoStyle: React.CSSProperties = { fontWeight: 'bold', color: '#e95420', fontSize: 'clamp(1rem, 3vw, 1.3rem)' };
+
+const brandContainer: React.CSSProperties = {
+  display: 'flex',
+  flexDirection: 'column'
+};
+
+const piktosTitle: React.CSSProperties = { 
+  fontWeight: '900', 
+  letterSpacing: '2px', 
+  color: '#e95420', 
+  fontSize: '1.4rem' 
+};
+
+const studioSubtitle: React.CSSProperties = { 
+  fontSize: '0.6rem', 
+  textTransform: 'uppercase', 
+  opacity: 0.7,
+  display: 'block',
+  marginTop: '-5px',
+  color: 'white'
+};
+
+const iconGroup: React.CSSProperties = { 
+  display: 'flex', 
+  gap: '15px', 
+  alignItems: 'center' 
+};
+
 const settingsBtn: React.CSSProperties = { 
   background: 'none', border: 'none', fontSize: '1.5rem', color: 'white', cursor: 'pointer' 
 };

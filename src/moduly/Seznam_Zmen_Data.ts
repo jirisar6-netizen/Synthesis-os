@@ -5,6 +5,7 @@ export interface LogZmena {
 }
 
 export const HISTORIE_ZMEN: LogZmena[] = [
+  { datum: "2026-02-23 09:40", verze: "B0.1.12", popis: "Rebranding systému na Piktos by Synthesis studio." },
   { datum: "2026-02-23 09:11", verze: "B0.1.6", popis: "Implementace logů (Changelog) a ikony historie." },
   { datum: "2026-02-23 09:05", verze: "B0.1.5", popis: "Oprava synchronizace API a přidání nouzového režimu." },
   { datum: "2026-02-23 08:50", verze: "B0.1.4", popis: "Adaptivní denní rytmus a časové filtry kategorií." },
