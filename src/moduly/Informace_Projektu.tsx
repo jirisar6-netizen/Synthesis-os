@@ -22,8 +22,8 @@ export const Informace_Projektu: React.FC<{ onClose: () => void }> = ({ onClose 
             <h3 style={h3Style}>❤️ OSOBNÍ PŘÍBĚH</h3>
             <p>Tento systém vznikl z hluboké vnitřní motivace vytvořit bezpečný prostor pro komunikaci dvou klíčových osob:</p>
             <ul style={listStyle}>
-              <li><strong>Daniel</strong> – syn mé bývalé partnerky Kateřiny, pro kterého hledáme cestu, jak lépe vyjádřit jeho svět.</li>
-              <li><strong>Štěpánek</strong> – můj syn, kterému chceme dopřát ty nejlepší technologie pro rozvoj a vzájemné pouto s rodinou.</li>
+              <li><strong>Daniel</strong> – syn Kateřiny, pro kterého hledáme cestu, jak lépe vyjádřit jeho svět.</li>
+              <li><strong>Štěpánek</strong> – syn Jiřího, kterému chceme dopřát ty nejlepší technologie pro rozvoj a vzájemné pouto s rodinou.</li>
             </ul>
           </section>
 
@@ -52,7 +52,7 @@ export const Informace_Projektu: React.FC<{ onClose: () => void }> = ({ onClose 
 };
 
 const overlayStyle: React.CSSProperties = { position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.85)', zIndex: 3000, display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '20px' };
-const contentStyle: React.CSSProperties = { background: '#300a24', padding: '25px', borderRadius: '20px', border: '1px solid #e95420', maxWidth: '500px', color: 'white', display: 'flex', flexDirection: 'column' };
+const contentStyle: React.CSSProperties = { background: '#1A1A1A', padding: '25px', borderRadius: '20px', border: '1px solid #e95420', maxWidth: '500px', color: 'white', display: 'flex', flexDirection: 'column' };
 const modalHeader: React.CSSProperties = { textAlign: 'center', marginBottom: '20px' };
 const brandTitle: React.CSSProperties = { margin: 0, fontSize: '2rem', fontWeight: '900', color: '#e95420', letterSpacing: '3px' };
 const studioTag: React.CSSProperties = { fontSize: '0.7rem', textTransform: 'uppercase', opacity: 0.6, letterSpacing: '1px' };

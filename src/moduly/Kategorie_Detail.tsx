@@ -4,16 +4,21 @@ import { fetchCommunicationCard, fetchFallbackImage, CardData } from './Arasaac_
 import { ziskejAktualniFaziDne, ziskejSlovaProFazi } from './Denni_Rytmus_Logika';
 import { Modalni_Nahled } from './Modalni_Nahled';
 import { getGridStyles } from './Grid_Engine';
+import { getVoksColor, VoksType } from './VOKS_Engine';
+import { hapticFeedback } from './Haptics_Engine';
 
 export const Kategorie_Detail: React.FC<{ 
   id: string, 
   onBack: () => void, 
   onAddToSentence: (k: CardData) => void,
   gridCols: number,
-  isUppercase: boolean
-}> = ({ id, onBack, onAddToSentence, gridCols, isUppercase }) => {
+  isUppercase: boolean,
+  voksType?: VoksType
+}> = ({ id, onBack, onAddToSentence, gridCols, isUppercase, voksType }) => {
   const [karty, setKarty] = useState<CardData[]>([]);
   const [selectedCard, setSelectedCard] = useState<CardData | null>(null);
+
+  const voksBorderColor = getVoksColor(voksType);
 
   useEffect(() => {
     let isMounted = true;
@@ -49,22 +54,22 @@ export const Kategorie_Detail: React.FC<{
       <button onClick={onBack} style={backButtonStyle}>← ZPĚT</button>
       <div style={getGridStyles(gridCols)}>
         {karty.map((k, index) => (
-          <div key={`${k.id}-${index}`} style={cardWrapperStyle}>
+          <div key={`${k.id}-${index}`} style={{ ...cardWrapperStyle, border: `4px solid ${voksBorderColor}` }}>
             {/* Klik na obrázek = MLUVÍ */}
-            <div onClick={() => mluv(k.label)} style={{ textAlign: 'center', cursor: 'pointer' }}>
+            <div onClick={() => { hapticFeedback('light'); mluv(k.label); }} style={{ textAlign: 'center', cursor: 'pointer' }}>
               <img src={k.image} alt={k.label} style={{ width: '100px', height: '100px', objectFit: 'contain' }} />
               <p className="piktos-label" style={{ ...labelStyle, textTransform: isUppercase ? 'uppercase' : 'none' }}>{k.label}</p>
             </div>
             
             {/* Tlačítko lupy = ZVĚTŠENÍ */}
             <button 
-              onClick={() => setSelectedCard(k)}
+              onClick={() => { hapticFeedback('medium'); setSelectedCard(k); }}
               style={zoomIconStyle}
             > 🔍 </button>
 
             {/* Tlačítko plus = PŘIDAT DO VĚTY */}
             <button 
-              onClick={() => onAddToSentence(k)}
+              onClick={() => { hapticFeedback('success'); onAddToSentence(k); }}
               style={addButtonStyle}
             > + </button>
           </div>

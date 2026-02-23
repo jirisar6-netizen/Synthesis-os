@@ -1,10 +1,16 @@
 import React from 'react';
 import { BRAND } from './Konfigurace_Brandu';
 
-export const Horni_Lista: React.FC<{ onMenuClick: () => void, onInfoClick: () => void, onHistoryClick: () => void, accentColor?: string }> = ({ onMenuClick, onInfoClick, onHistoryClick, accentColor }) => {
+export const Horni_Lista: React.FC<{ 
+  onMenuClick: () => void, 
+  onInfoClick: () => void, 
+  onHistoryClick: () => void, 
+  onLogoClick: () => void,
+  accentColor?: string 
+}> = ({ onMenuClick, onInfoClick, onHistoryClick, onLogoClick, accentColor }) => {
   return (
     <div style={headerStyle}>
-      <div style={brandContainer}>
+      <div style={brandContainer} onClick={onLogoClick}>
         <span style={{ ...piktosTitle, color: accentColor || '#e95420' }}>PIKTOS</span>
         <span style={studioSubtitle}>by Synthesis studio</span>
       </div>

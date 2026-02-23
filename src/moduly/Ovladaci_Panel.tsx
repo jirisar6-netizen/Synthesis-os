@@ -1,11 +1,15 @@
 import React from 'react';
 import { generujTiskovePDF } from './Export_PDF';
+import { SOS_Editor } from './SOS_Editor';
 
 interface OvladaciPanelProps {
   gridCols: number;
   setGridCols: (cols: number) => void;
   isUppercase: boolean;
   setIsUppercase: (val: boolean) => void;
+  parentalLock: boolean;
+  setParentalLock: (val: boolean) => void;
+  onOpenSocialScripts: () => void;
   onClose: () => void;
   accentColor: string;
 }
@@ -15,6 +19,9 @@ export const Ovladaci_Panel: React.FC<OvladaciPanelProps> = ({
   setGridCols, 
   isUppercase, 
   setIsUppercase, 
+  parentalLock,
+  setParentalLock,
+  onOpenSocialScripts,
   onClose,
   accentColor 
 }) => {
@@ -38,6 +45,9 @@ export const Ovladaci_Panel: React.FC<OvladaciPanelProps> = ({
         </div>
 
         <div style={scrollArea}>
+          {/* BLOK 0: SOS KARTA */}
+          <SOS_Editor />
+
           {/* BLOK 1: ZOBRAZENÍ (GRID & TYPOGRAFIE) */}
           <section style={configBlock}>
             <h4 style={blockHeader}>🖥️ Zobrazení</h4>
@@ -63,6 +73,15 @@ export const Ovladaci_Panel: React.FC<OvladaciPanelProps> = ({
                 style={checkboxStyle}
               />
             </div>
+            <div style={settingRow}>
+              <span>ZÁMEK RODIČE (Parental Lock):</span>
+              <input 
+                type="checkbox" 
+                onChange={(e) => setParentalLock(e.target.checked)} 
+                checked={parentalLock} 
+                style={checkboxStyle}
+              />
+            </div>
           </section>
 
           {/* BLOK 2: SPRÁVA OBSAHU (PERSONALIZACE) */}
@@ -71,6 +90,7 @@ export const Ovladaci_Panel: React.FC<OvladaciPanelProps> = ({
             <div style={btnGroup}>
               <button onClick={() => alert("Funkce nahrávání foto bude dostupná v B0.1.16")} style={actionBtn}>NAHRÁT VLASTNÍ FOTO</button>
               <button onClick={() => alert("Funkce nahrávání hlasu bude dostupná v B0.1.16")} style={actionBtn}>NAHRÁT HLAS (3s)</button>
+              <button onClick={onOpenSocialScripts} style={{ ...actionBtn, background: 'rgba(39, 174, 96, 0.2)' }}>SOCIÁLNÍ PŘÍBĚHY</button>
             </div>
           </section>
 
@@ -99,7 +119,7 @@ export const Ovladaci_Panel: React.FC<OvladaciPanelProps> = ({
 };
 
 const overlayStyle: React.CSSProperties = {
-  position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.85)', zInter: 10000,
+  position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.85)', zIndex: 10000,
   display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '20px'
 };
 

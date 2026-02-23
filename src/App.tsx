@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { SEZNAM_KATEGORII } from './moduly/Kategorie_Karet';
 import { Kategorie_Detail } from './moduly/Kategorie_Detail';
 import { Paticka_Systemu } from './moduly/Paticka_Systemu';
 import { CardData } from './moduly/Arasaac_API_Mustek';
@@ -14,9 +13,15 @@ import { Historie_Zmen_Komponenta } from './moduly/Historie_Zmen_Komponenta';
 import { BRAND } from './moduly/Konfigurace_Brandu';
 import { Ovladaci_Panel } from './moduly/Ovladaci_Panel';
 import { getGridStyles } from './moduly/Grid_Engine';
+import { SmartBar } from './moduly/Smart_Bar';
+import { hapticFeedback } from './moduly/Haptics_Engine';
+import { Kategorie, SEZNAM_KATEGORII } from './moduly/Kategorie_Karet';
+import { SOS_Fullscreen } from './moduly/SOS_Fullscreen';
+import { Social_Scripts_Manager } from './moduly/Social_Scripts';
 
 const App: React.FC = () => {
   const [vybranaKat, setVybranaKat] = useState<string | null>(null);
+  const [currentFolder, setCurrentFolder] = useState<string | null>(null);
   const [vetnaLista, setVetnaLista] = useState<CardData[]>([]);
   const [tmavyRezim, setTmavyRezim] = useState(true);
   const [showMenu, setShowMenu] = useState(false);
@@ -24,14 +29,35 @@ const App: React.FC = () => {
   const [showHistory, setShowHistory] = useState(false);
   const [gridCols, setGridCols] = useState(3);
   const [isUppercase, setIsUppercase] = useState(true);
+  const [showSOS, setShowSOS] = useState(false);
+  const [sosTapCount, setSosTapCount] = useState(0);
+  const [parentalLock, setParentalLock] = useState(false);
+  const [showSocialScripts, setShowSocialScripts] = useState(false);
 
-  const aktualniBarvaPozadi = tmavyRezim ? '#300a24' : '#1A1A1A';
-  const akcent = tmavyRezim ? '#e95420' : '#3498db';
+  const aktualniBarvaPozadi = tmavyRezim ? '#1A1A1A' : '#F5F5F5';
+  const akcent = '#e95420';
+
+  const handleLogoTap = () => {
+    hapticFeedback('light');
+    const newCount = sosTapCount + 1;
+    setSosTapCount(newCount);
+    if (newCount >= 3) {
+      setShowSOS(true);
+      setSosTapCount(0);
+      hapticFeedback('heavy');
+    }
+    // Reset count after 2 seconds of inactivity
+    setTimeout(() => setSosTapCount(0), 2000);
+  };
 
   const pridejDoVety = (karta: CardData) => {
-    if (vetnaLista.length < 5) { // Limit pro Xiaomi 13T Pro Portrait
+    hapticFeedback('medium');
+    if (vetnaLista.length < 5) {
       setVetnaLista([...vetnaLista, karta]);
     }
+    // Auto-close folder logic
+    setVybranaKat(null);
+    setCurrentFolder(null);
   };
 
   const vymazVetu = () => setVetnaLista([]);
@@ -56,9 +82,17 @@ const App: React.FC = () => {
   return (
     <div style={{ ...layoutStyle, backgroundColor: aktualniBarvaPozadi }}>
       <Horni_Lista 
-        onMenuClick={() => setShowMenu(!showMenu)} 
+        onMenuClick={() => {
+          if (!parentalLock) {
+            setShowMenu(!showMenu);
+            hapticFeedback('medium');
+          } else {
+            alert("REŽIM ÚPRAV JE ZAMČEN");
+          }
+        }} 
         onInfoClick={() => setShowInfo(true)}
         onHistoryClick={() => setShowHistory(true)}
+        onLogoClick={handleLogoTap}
         accentColor={akcent} 
       />
       
@@ -68,10 +102,17 @@ const App: React.FC = () => {
           setGridCols={setGridCols}
           isUppercase={isUppercase}
           setIsUppercase={setIsUppercase}
+          parentalLock={parentalLock}
+          setParentalLock={setParentalLock}
+          onOpenSocialScripts={() => { setShowSocialScripts(true); setShowMenu(false); }}
           onClose={() => setShowMenu(false)}
           accentColor={akcent}
         />
       )}
+
+      {showSocialScripts && <Social_Scripts_Manager onClose={() => setShowSocialScripts(false)} />}
+
+      {showSOS && <SOS_Fullscreen onClose={() => setShowSOS(false)} />}
 
       {showInfo && <Informace_Projektu onClose={() => setShowInfo(false)} />}
       {showHistory && <Historie_Zmen_Komponenta onClose={() => setShowHistory(false)} />}
@@ -85,20 +126,44 @@ const App: React.FC = () => {
       )}
 
       <div style={contentStyle}>
+        {/* Breadcrumbs */}
+        {(currentFolder || vybranaKat) && (
+          <div style={breadcrumbStyle}>
+            <span onClick={() => { setCurrentFolder(null); setVybranaKat(null); }} style={crumbStyle}>DOMŮ</span>
+            {currentFolder && <span style={crumbStyle}> / {currentFolder.toUpperCase()}</span>}
+            {vybranaKat && <span style={crumbStyle}> / {SEZNAM_KATEGORII.find(k => k.id === vybranaKat)?.nazev.toUpperCase()}</span>}
+          </div>
+        )}
+
         {!vybranaKat ? (
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
             {renderRytmusZona()}
+            <SmartBar accentColor={akcent} />
             
-            <h1 style={{ ...headerStyle, color: akcent }}>{BRAND.jmeno.toUpperCase()} ROZCESTNÍK</h1>
+            <h1 style={{ ...headerStyle, color: akcent, textTransform: isUppercase ? 'uppercase' : 'none' }}>
+              {currentFolder ? currentFolder : `${BRAND.jmeno} ROZCESTNÍK`}
+            </h1>
             
             <main style={getGridStyles(gridCols)}>
-              {zobrazeneKategorie.map(kat => (
+              {SEZNAM_KATEGORII
+                .filter(kat => kat.parent === (currentFolder || undefined))
+                .map(kat => (
                 <button 
                   key={kat.id} 
-                  onClick={() => { odemkniAudio(); setVybranaKat(kat.id); }}
+                  onClick={() => { 
+                    hapticFeedback('light');
+                    odemkniAudio(); 
+                    // Pokud má kategorie základní slova, je to listová kategorie (detail)
+                    // Pokud ne, je to složka
+                    if (kat.zakladniSlova.length > 0) {
+                      setVybranaKat(kat.id);
+                    } else {
+                      setCurrentFolder(kat.id);
+                    }
+                  }}
                   style={{ ...compactButtonStyle, backgroundColor: kat.barva }}
                 >
-                  {kat.nazev.toUpperCase()}
+                  {isUppercase ? kat.nazev.toUpperCase() : kat.nazev}
                 </button>
               ))}
             </main>
@@ -123,6 +188,7 @@ const App: React.FC = () => {
             onAddToSentence={pridejDoVety}
             gridCols={gridCols}
             isUppercase={isUppercase}
+            voksType={SEZNAM_KATEGORII.find(k => k.id === vybranaKat)?.voksType}
           />
         )}
       </div>
@@ -145,7 +211,22 @@ const contentStyle: React.CSSProperties = {
   flex: 1,
   padding: '10px',
   display: 'flex',
-  flexDirection: 'column'
+  flexDirection: 'column',
+  background: 'rgba(255,255,255,0.02)', // Glassmorphism touch
+  backdropFilter: 'blur(5px)'
+};
+
+const breadcrumbStyle: React.CSSProperties = {
+  padding: '5px 10px',
+  fontSize: '0.7rem',
+  color: 'rgba(255,255,255,0.5)',
+  marginBottom: '10px'
+};
+
+const crumbStyle: React.CSSProperties = {
+  cursor: 'pointer',
+  textDecoration: 'underline',
+  marginRight: '5px'
 };
 
 const headerStyle: React.CSSProperties = { color: '#e95420', textAlign: 'center', marginBottom: '20px', fontSize: 'clamp(1.5rem, 5vw, 2.5rem)', fontWeight: '800' };
