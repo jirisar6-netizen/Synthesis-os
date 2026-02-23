@@ -3,9 +3,15 @@ import { mluv } from './Hlasovy_Vystup';
 import { fetchCommunicationCard, fetchFallbackImage, CardData } from './Arasaac_API_Mustek';
 import { ziskejAktualniFaziDne, ziskejSlovaProFazi } from './Denni_Rytmus_Logika';
 import { Modalni_Nahled } from './Modalni_Nahled';
-import { gridResponzivniStyle } from './Layout_Engine';
+import { getGridStyles } from './Grid_Engine';
 
-export const Kategorie_Detail: React.FC<{ id: string, onBack: () => void, onAddToSentence: (k: CardData) => void }> = ({ id, onBack, onAddToSentence }) => {
+export const Kategorie_Detail: React.FC<{ 
+  id: string, 
+  onBack: () => void, 
+  onAddToSentence: (k: CardData) => void,
+  gridCols: number,
+  isUppercase: boolean
+}> = ({ id, onBack, onAddToSentence, gridCols, isUppercase }) => {
   const [karty, setKarty] = useState<CardData[]>([]);
   const [selectedCard, setSelectedCard] = useState<CardData | null>(null);
 
@@ -41,13 +47,13 @@ export const Kategorie_Detail: React.FC<{ id: string, onBack: () => void, onAddT
   return (
     <div>
       <button onClick={onBack} style={backButtonStyle}>← ZPĚT</button>
-      <div style={gridResponzivniStyle}>
+      <div style={getGridStyles(gridCols)}>
         {karty.map((k, index) => (
           <div key={`${k.id}-${index}`} style={cardWrapperStyle}>
             {/* Klik na obrázek = MLUVÍ */}
             <div onClick={() => mluv(k.label)} style={{ textAlign: 'center', cursor: 'pointer' }}>
-              <img src={k.image} alt={k.label} style={{ width: '100px' }} />
-              <p style={labelStyle}>{k.label}</p>
+              <img src={k.image} alt={k.label} style={{ width: '100px', height: '100px', objectFit: 'contain' }} />
+              <p className="piktos-label" style={{ ...labelStyle, textTransform: isUppercase ? 'uppercase' : 'none' }}>{k.label}</p>
             </div>
             
             {/* Tlačítko lupy = ZVĚTŠENÍ */}

@@ -12,6 +12,8 @@ import { Informace_Projektu } from './moduly/Informace_Projektu';
 import { ziskejAktualniFaziDne, seradKategoriePodleCasu } from './moduly/Denni_Rytmus_Logika';
 import { Historie_Zmen_Komponenta } from './moduly/Historie_Zmen_Komponenta';
 import { BRAND } from './moduly/Konfigurace_Brandu';
+import { Ovladaci_Panel } from './moduly/Ovladaci_Panel';
+import { getGridStyles } from './moduly/Grid_Engine';
 
 const App: React.FC = () => {
   const [vybranaKat, setVybranaKat] = useState<string | null>(null);
@@ -20,6 +22,8 @@ const App: React.FC = () => {
   const [showMenu, setShowMenu] = useState(false);
   const [showInfo, setShowInfo] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
+  const [gridCols, setGridCols] = useState(3);
+  const [isUppercase, setIsUppercase] = useState(true);
 
   const aktualniBarvaPozadi = tmavyRezim ? '#300a24' : '#1A1A1A';
   const akcent = tmavyRezim ? '#e95420' : '#3498db';
@@ -59,20 +63,14 @@ const App: React.FC = () => {
       />
       
       {showMenu && (
-        <div style={menuOverlayStyle}>
-          <div style={menuContentStyle}>
-            <h3 style={{ color: akcent, marginTop: 0 }}>NASTAVENÍ</h3>
-            <button onClick={() => setTmavyRezim(!tmavyRezim)} style={{ ...menuBtnStyle, background: akcent }}>
-              🎨 Styl: {tmavyRezim ? 'Ubuntu Purple' : 'Deep Night'}
-            </button>
-            <button onClick={() => { setShowInfo(true); setShowMenu(false); }} style={{ ...menuBtnStyle, background: '#555', marginTop: '10px' }}>
-              ℹ️ O PROJEKTU
-            </button>
-            <button onClick={() => setShowMenu(false)} style={{ ...menuBtnStyle, background: '#777', marginTop: '10px' }}>
-              ZAVŘÍT
-            </button>
-          </div>
-        </div>
+        <Ovladaci_Panel 
+          gridCols={gridCols}
+          setGridCols={setGridCols}
+          isUppercase={isUppercase}
+          setIsUppercase={setIsUppercase}
+          onClose={() => setShowMenu(false)}
+          accentColor={akcent}
+        />
       )}
 
       {showInfo && <Informace_Projektu onClose={() => setShowInfo(false)} />}
@@ -93,7 +91,7 @@ const App: React.FC = () => {
             
             <h1 style={{ ...headerStyle, color: akcent }}>{BRAND.jmeno.toUpperCase()} ROZCESTNÍK</h1>
             
-            <main style={gridResponzivniStyle}>
+            <main style={getGridStyles(gridCols)}>
               {zobrazeneKategorie.map(kat => (
                 <button 
                   key={kat.id} 
@@ -123,6 +121,8 @@ const App: React.FC = () => {
             id={vybranaKat} 
             onBack={() => setVybranaKat(null)} 
             onAddToSentence={pridejDoVety}
+            gridCols={gridCols}
+            isUppercase={isUppercase}
           />
         )}
       </div>
