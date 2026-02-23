@@ -1,7 +1,7 @@
 import React from 'react';
 
-export const SYSTEM_VERSION = "B0.0.8";
-export const POSLEDNI_AKTUALIZACE = "2026-02-22";
+export const SYSTEM_VERSION = "B0.1.6";
+export const POSLEDNI_AKTUALIZACE = "2026-02-23";
 
 export const verzeStyle: React.CSSProperties = {
   position: 'fixed',

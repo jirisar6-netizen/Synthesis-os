@@ -32,3 +32,12 @@ export const fetchCommunicationCard = async (text: string): Promise<CardData | n
     return null;
   }
 };
+
+export const fetchFallbackImage = async (text: string): Promise<CardData | null> => {
+  // Záložní řešení pomocí Picsum (nebo jiného servisu), pokud ARASAAC selže
+  return {
+    id: Math.floor(Math.random() * 1000000),
+    label: text,
+    image: `https://picsum.photos/seed/${encodeURIComponent(text)}/300/300`
+  };
+};

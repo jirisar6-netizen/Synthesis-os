@@ -9,6 +9,8 @@ import { Vetna_Lista_Komponenta } from './moduly/Vetna_Lista_Komponenta';
 import { Horni_Lista } from './moduly/Horni_Lista';
 import { gridResponzivniStyle } from './moduly/Layout_Engine';
 import { Informace_Projektu } from './moduly/Informace_Projektu';
+import { ziskejAktualniFaziDne, seradKategoriePodleCasu } from './moduly/Denni_Rytmus_Logika';
+import { Historie_Zmen_Komponenta } from './moduly/Historie_Zmen_Komponenta';
 
 const App: React.FC = () => {
   const [vybranaKat, setVybranaKat] = useState<string | null>(null);
@@ -16,6 +18,7 @@ const App: React.FC = () => {
   const [tmavyRezim, setTmavyRezim] = useState(true);
   const [showMenu, setShowMenu] = useState(false);
   const [showInfo, setShowInfo] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
 
   const aktualniBarvaPozadi = tmavyRezim ? '#300a24' : '#1A1A1A';
   const akcent = tmavyRezim ? '#e95420' : '#3498db';
@@ -28,11 +31,14 @@ const App: React.FC = () => {
 
   const vymazVetu = () => setVetnaLista([]);
 
+  const zobrazeneKategorie = seradKategoriePodleCasu(SEZNAM_KATEGORII);
+
   return (
     <div style={{ ...layoutStyle, backgroundColor: aktualniBarvaPozadi }}>
       <Horni_Lista 
         onMenuClick={() => setShowMenu(!showMenu)} 
         onInfoClick={() => setShowInfo(true)}
+        onHistoryClick={() => setShowHistory(true)}
         accentColor={akcent} 
       />
       
@@ -54,6 +60,7 @@ const App: React.FC = () => {
       )}
 
       {showInfo && <Informace_Projektu onClose={() => setShowInfo(false)} />}
+      {showHistory && <Historie_Zmen_Komponenta onClose={() => setShowHistory(false)} />}
 
       {/* Větná lišta se zobrazí JEN v detailu kategorie */}
       {vybranaKat && (
@@ -68,7 +75,7 @@ const App: React.FC = () => {
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
             <h1 style={{ ...headerStyle, color: akcent }}>AISS ROZCESTNÍK</h1>
             <div style={gridResponzivniStyle}>
-              {SEZNAM_KATEGORII.map(kat => (
+              {zobrazeneKategorie.map(kat => (
                 <button 
                   key={kat.id} 
                   onClick={() => { odemkniAudio(); setVybranaKat(kat.id); }}

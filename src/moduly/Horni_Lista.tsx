@@ -1,17 +1,25 @@
 import React from 'react';
 
-export const Horni_Lista: React.FC<{ onMenuClick: () => void, onInfoClick: () => void, accentColor?: string }> = ({ onMenuClick, onInfoClick, accentColor }) => {
+export const Horni_Lista: React.FC<{ onMenuClick: () => void, onInfoClick: () => void, onHistoryClick: () => void, accentColor?: string }> = ({ onMenuClick, onInfoClick, onHistoryClick, accentColor }) => {
   return (
     <div style={headerWrapper}>
-      <span style={{ ...logoStyle, color: accentColor || '#e95420' }}>AISS-OS <small style={{fontSize: '0.6rem'}}>B0.0.8</small></span>
+      <span style={{ ...logoStyle, color: accentColor || '#e95420' }}>AISS-OS <small style={{fontSize: '0.6rem'}}>B0.1.6</small></span>
       <div style={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
+        <button 
+          onClick={onHistoryClick} 
+          style={{ background: 'none', border: 'none', color: accentColor || '#e95420', fontSize: '1.3rem', cursor: 'pointer' }}
+          title="Historie změn"
+        >
+          🕒
+        </button>
         <button 
           onClick={onInfoClick} 
           style={{ background: 'none', border: 'none', color: accentColor || '#e95420', fontSize: '1.5rem', cursor: 'pointer' }}
+          title="O projektu"
         >
           ⓘ
         </button>
-        <button onClick={onMenuClick} style={settingsBtn}>⚙️</button>
+        <button onClick={onMenuClick} style={settingsBtn} title="Nastavení">⚙️</button>
       </div>
     </div>
   );

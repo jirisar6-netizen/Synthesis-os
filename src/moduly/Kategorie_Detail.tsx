@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { mluv } from './Hlasovy_Vystup';
-import { fetchCommunicationCard, CardData } from './Arasaac_API_Mustek';
-import { ZAKLADNI_20_SLOV } from './Kategorie_Data_Rozsirena';
+import { fetchCommunicationCard, fetchFallbackImage, CardData } from './Arasaac_API_Mustek';
+import { ziskejAktualniFaziDne, ziskejSlovaProFazi } from './Denni_Rytmus_Logika';
 import { Modalni_Nahled } from './Modalni_Nahled';
 import { gridResponzivniStyle } from './Layout_Engine';
 
@@ -11,21 +11,32 @@ export const Kategorie_Detail: React.FC<{ id: string, onBack: () => void, onAddT
 
   useEffect(() => {
     let isMounted = true;
-    const nacti = async () => {
-      const slova = ZAKLADNI_20_SLOV[id] || [];
-      const nacteneKarty = [];
+    
+    const nactiData = async () => {
+      // Resetujeme karty před novým načítáním, aby Daniel neviděl starý obsah
+      setKarty([]); 
       
+      // Získání slov pro aktuální kategorii a fázi dne
+      const slova = ziskejSlovaProFazi(id, ziskejAktualniFaziDne());
+      
+      if (slova.length === 0) {
+        console.warn("Žádná slova pro tuto fázi dne nenalezena.");
+        return;
+      }
+
+      const nacteneKarty = [];
       for (const slovo of slova) {
-        const karta = await fetchCommunicationCard(slovo);
-        if (karta) nacteneKarty.push(karta);
+        // Zkusíme nejdříve ARASAAC, pak Pixabay zálohu (tvůj klíč)
+        const karta = await fetchCommunicationCard(slovo) || await fetchFallbackImage(slovo);
+        if (karta && isMounted) nacteneKarty.push(karta);
       }
       
       if (isMounted) setKarty(nacteneKarty);
     };
-    
-    nacti();
+
+    nactiData();
     return () => { isMounted = false; };
-  }, [id]);
+  }, [id]); // Spustí se při každé změně kategorie
 
   return (
     <div>
