@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const SYSTEM_VERSION = "V0.1.20";
+export const SYSTEM_VERSION = "V0.1.22";
 export const POSLEDNI_AKTUALIZACE = "2026-02-23";
 
 export const verzeStyle: React.CSSProperties = {

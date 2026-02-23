@@ -13,6 +13,7 @@ import { Historie_Zmen_Komponenta } from './moduly/Historie_Zmen_Komponenta';
 import { BRAND } from './moduly/Konfigurace_Brandu';
 import { Ovladaci_Panel } from './moduly/Ovladaci_Panel';
 import { getGridStyles } from './moduly/Grid_Engine';
+import { GridContainer } from './moduly/GridContainer';
 import { SmartBar } from './moduly/Smart_Bar';
 import { hapticFeedback } from './moduly/Haptics_Engine';
 import { Kategorie, SEZNAM_KATEGORII } from './moduly/Kategorie_Karet';
@@ -141,10 +142,10 @@ const App: React.FC = () => {
             <SmartBar accentColor={akcent} />
             
             <h1 style={{ ...headerStyle, color: akcent, textTransform: isUppercase ? 'uppercase' : 'none' }}>
-              {currentFolder ? currentFolder : `${BRAND.jmeno} ROZCESTNÍK`}
+              {currentFolder ? SEZNAM_KATEGORII.find(k => k.id === currentFolder)?.nazev : `${BRAND.jmeno} ROZCESTNÍK`}
             </h1>
             
-            <main style={getGridStyles(gridCols)}>
+            <GridContainer gridCols={gridCols}>
               {SEZNAM_KATEGORII
                 .filter(kat => kat.parent === (currentFolder || undefined))
                 .map(kat => (
@@ -166,7 +167,7 @@ const App: React.FC = () => {
                   {isUppercase ? kat.nazev.toUpperCase() : kat.nazev}
                 </button>
               ))}
-            </main>
+            </GridContainer>
             
             {/* RYCHLÁ KOMUNIKACE - Fixní dole */}
             <footer style={quickDock}>

@@ -3,9 +3,10 @@ import { mluv } from './Hlasovy_Vystup';
 import { fetchCommunicationCard, fetchFallbackImage, CardData } from './Arasaac_API_Mustek';
 import { ziskejAktualniFaziDne, ziskejSlovaProFazi } from './Denni_Rytmus_Logika';
 import { Modalni_Nahled } from './Modalni_Nahled';
-import { getGridStyles } from './Grid_Engine';
+import { GridContainer } from './GridContainer';
 import { getVoksColor, VoksType } from './VOKS_Engine';
 import { hapticFeedback } from './Haptics_Engine';
+import { SEZNAM_KATEGORII } from './Kategorie_Karet';
 
 export const Kategorie_Detail: React.FC<{ 
   id: string, 
@@ -28,8 +29,29 @@ export const Kategorie_Detail: React.FC<{
       setKarty([]); 
       
       // Získání slov pro aktuální kategorii a fázi dne
-      const slova = ziskejSlovaProFazi(id, ziskejAktualniFaziDne());
+      let slova = ziskejSlovaProFazi(id, ziskejAktualniFaziDne());
       
+      // Fallback Logic: Pokud je aktuální podkategorie prázdná, použijeme její název jako klíčové slovo
+      if (slova.length === 0) {
+        const kat = SEZNAM_KATEGORII.find(k => k.id === id);
+        if (kat) {
+          slova = [kat.nazev];
+        }
+      }
+
+      // Smart Search Context: Přidání souvisejících tagů pro bohatší obsah
+      const relatedTags: Record<string, string[]> = {
+        jidlo: ['příbor', 'talíř', 'hlad', 'stůl', 'židle'],
+        piti: ['sklenice', 'žízeň', 'pít', 'voda', 'džus'],
+        zachod: ['mýdlo', 'ručník', 'čistý', 'voda', 'toaleta'],
+        hracky: ['hrát si', 'zábava', 'kamarád', 'sdílet', 'uklidit'],
+        skola: ['učení', 'psaní', 'čtení', 'třída', 'přestávka']
+      };
+
+      if (relatedTags[id]) {
+        slova = [...new Set([...slova, ...relatedTags[id]])];
+      }
+
       if (slova.length === 0) {
         console.warn("Žádná slova pro tuto fázi dne nenalezena.");
         return;
@@ -42,6 +64,15 @@ export const Kategorie_Detail: React.FC<{
         if (karta && isMounted) nacteneKarty.push(karta);
       }
       
+      // Emergency Render: Pokud se nepodařilo načíst žádné karty, zkusíme force fetch podle názvu kategorie
+      if (nacteneKarty.length === 0 && isMounted) {
+        const kat = SEZNAM_KATEGORII.find(k => k.id === id);
+        if (kat) {
+           const fallbackKarta = await fetchCommunicationCard(kat.nazev) || await fetchFallbackImage(kat.nazev);
+           if (fallbackKarta) nacteneKarty.push(fallbackKarta);
+        }
+      }
+      
       if (isMounted) setKarty(nacteneKarty);
     };
 
@@ -49,15 +80,19 @@ export const Kategorie_Detail: React.FC<{
     return () => { isMounted = false; };
   }, [id]); // Spustí se při každé změně kategorie
 
+  // Dynamický výpočet sloupců podle počtu karet
+  const dynamicCols = karty.length < 6 ? 2 : (karty.length <= 9 ? 3 : 4);
+  const imgSize = dynamicCols === 2 ? '150px' : (dynamicCols === 3 ? '100px' : '80px');
+
   return (
     <div>
       <button onClick={onBack} style={backButtonStyle}>← ZPĚT</button>
-      <div style={getGridStyles(gridCols)}>
+      <GridContainer gridCols={dynamicCols}>
         {karty.map((k, index) => (
           <div key={`${k.id}-${index}`} style={{ ...cardWrapperStyle, border: `4px solid ${voksBorderColor}` }}>
             {/* Klik na obrázek = MLUVÍ */}
             <div onClick={() => { hapticFeedback('light'); mluv(k.label); }} style={{ textAlign: 'center', cursor: 'pointer' }}>
-              <img src={k.image} alt={k.label} style={{ width: '100px', height: '100px', objectFit: 'contain' }} />
+              <img src={k.image} alt={k.label} style={{ width: imgSize, height: imgSize, objectFit: 'contain' }} />
               <p className="piktos-label" style={{ ...labelStyle, textTransform: isUppercase ? 'uppercase' : 'none' }}>{k.label}</p>
             </div>
             
@@ -74,7 +109,7 @@ export const Kategorie_Detail: React.FC<{
             > + </button>
           </div>
         ))}
-      </div>
+      </GridContainer>
 
       {selectedCard && (
         <Modalni_Nahled 
@@ -103,7 +138,8 @@ const addButtonStyle: React.CSSProperties = {
 
 const cardWrapperStyle: React.CSSProperties = { 
   background: 'white', padding: '15px', borderRadius: '15px', 
-  position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center' 
+  position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center',
+  zIndex: 1, opacity: 1 // Fix: Ujistíme se, že karty jsou vidět
 };
 
 const labelStyle: React.CSSProperties = {

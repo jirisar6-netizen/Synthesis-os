@@ -1,5 +1,10 @@
 export const ZAKLADNI_20_SLOV: Record<string, string[]> = {
   potreby: ['pít', 'jíst', 'záchod', 'spát', 'pomoc', 'umyvadlo', 'koupat', 'zuby', 'obléknout', 'svléknout', 'teplo', 'zima', 'odpočinek', 'léky', 'brýle', 'boty', 'čepice', 'světlo', 'ticho', 'otevřít'],
+  piti: ['voda', 'džus', 'čaj', 'mléko', 'kakao', 'láhev', 'hrneček', 'brčko'],
+  zachod: ['toaletní papír', 'spláchnout', 'umýt ruce', 'mýdlo', 'ručník', 'nočník', 'plenka'],
+  obleceni: ['tričko', 'kalhoty', 'ponožky', 'boty', 'mikina', 'bunda', 'čepice', 'pyžamo'],
+  hygiena: ['kartáček', 'pasta', 'vana', 'sprcha', 'hřeben', 'stříhat nehty'],
+  stepanek: ['miminko', 'spát', 'dudlík', 'jemně pohladit', 'ticho', 'kočárek'],
   jidlo: ['jablko', 'banán', 'jogurt', 'polévka', 'maso', 'chleba', 'rohlík', 'mléko', 'voda', 'džus', 'sušenka', 'čokoláda', 'zmrzlina', 'těstoviny', 'rýže', 'brambory', 'zelenina', 'ovoce', 'sýr', 'šunka'],
   mista: ['domov', 'škola', 'hřiště', 'obchod', 'park', 'les', 'bazén', 'kino', 'divadlo', 'nemocnice', 'zahrada', 'ulice', 'zastávka', 'nádraží', 'letiště', 'restaurace', 'cukrárna', 'knihovna', 'pošta', 'banka'],
   hracky: ['auto', 'kostky', 'tablet', 'míč', 'panenka', 'plyšák', 'puzzle', 'kniha', 'pastelky', 'papír', 'nůžky', 'lepidlo', 'modelína', 'bublifuk', 'pískoviště', 'skluzavka', 'houpačka', 'trampolína', 'kolo', 'koloběžka'],
