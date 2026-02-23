@@ -31,7 +31,22 @@ const App: React.FC = () => {
 
   const vymazVetu = () => setVetnaLista([]);
 
+  const faze = ziskejAktualniFaziDne();
   const zobrazeneKategorie = seradKategoriePodleCasu(SEZNAM_KATEGORII);
+
+  const renderRytmusZona = () => {
+    const tecky = ['RANO', 'DOPOLEDNE', 'ODPOLEDNE', 'VECER'];
+    return (
+      <div style={rytmBar}>
+        <span style={{ fontWeight: 'bold' }}>FÁZE: {faze}</span>
+        <div style={miniSchedule}>
+          {tecky.map(t => (
+            <span key={t} style={t === faze ? activeDot : inactiveDot}>●</span>
+          ))}
+        </div>
+      </div>
+    );
+  };
 
   return (
     <div style={{ ...layoutStyle, backgroundColor: aktualniBarvaPozadi }}>
@@ -73,8 +88,11 @@ const App: React.FC = () => {
       <div style={contentStyle}>
         {!vybranaKat ? (
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+            {renderRytmusZona()}
+            
             <h1 style={{ ...headerStyle, color: akcent }}>AISS ROZCESTNÍK</h1>
-            <div style={gridResponzivniStyle}>
+            
+            <main style={gridResponzivniStyle}>
               {zobrazeneKategorie.map(kat => (
                 <button 
                   key={kat.id} 
@@ -84,13 +102,20 @@ const App: React.FC = () => {
                   {kat.nazev.toUpperCase()}
                 </button>
               ))}
-            </div>
+            </main>
             
-            {/* Sekce pro rychlou reakci (stále na očích dole) */}
-            <div style={quickActionArea}>
+            {/* RYCHLÁ KOMUNIKACE - Fixní dole */}
+            <footer style={quickDock}>
               <button onClick={() => mluv("Ano")} style={yesBtn}>ANO</button>
               <button onClick={() => mluv("Ne")} style={noBtn}>NE</button>
-            </div>
+              
+              {/* Mini Emoční Teploměr */}
+              <div style={moodBar}>
+                <div onClick={() => mluv("Cítím se dobře")} style={{...moodPoint, background: '#27AE60'}}></div>
+                <div onClick={() => mluv("Je mi to jedno")} style={{...moodPoint, background: '#F39C12'}}></div>
+                <div onClick={() => mluv("Necítím se dobře")} style={{...moodPoint, background: '#C0392B'}}></div>
+              </div>
+            </footer>
           </div>
         ) : (
           <Kategorie_Detail 
@@ -140,13 +165,6 @@ const compactButtonStyle: React.CSSProperties = {
   cursor: 'pointer'
 };
 
-const quickActionArea: React.CSSProperties = {
-  display: 'flex',
-  gap: '15px',
-  padding: '15px',
-  marginTop: '10px'
-};
-
 const yesBtn: React.CSSProperties = { flex: 1, padding: '25px', background: '#27AE60', color: 'white', borderRadius: '15px', fontWeight: 'bold', border: 'none', fontSize: 'clamp(1rem, 3vw, 1.4rem)', cursor: 'pointer' };
 const noBtn: React.CSSProperties = { flex: 1, padding: '25px', background: '#C0392B', color: 'white', borderRadius: '15px', fontWeight: 'bold', border: 'none', fontSize: 'clamp(1rem, 3vw, 1.4rem)', cursor: 'pointer' };
 
@@ -164,5 +182,53 @@ const menuBtnStyle: React.CSSProperties = {
   width: '100%', padding: '15px', borderRadius: '10px', border: 'none',
   background: '#e95420', color: 'white', fontWeight: 'bold', cursor: 'pointer'
 };
+
+const quickDock: React.CSSProperties = {
+  display: 'flex',
+  alignItems: 'center',
+  gap: '10px',
+  padding: '15px',
+  marginTop: 'auto',
+  background: 'rgba(0,0,0,0.3)',
+  borderRadius: '20px 20px 0 0',
+  backdropFilter: 'blur(10px)'
+};
+
+const moodBar: React.CSSProperties = {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '5px',
+  padding: '5px',
+  background: 'rgba(255,255,255,0.1)',
+  borderRadius: '10px'
+};
+
+const moodPoint: React.CSSProperties = {
+  width: '15px',
+  height: '15px',
+  borderRadius: '50%',
+  cursor: 'pointer',
+  border: '1px solid rgba(255,255,255,0.2)'
+};
+
+const rytmBar: React.CSSProperties = {
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  padding: '8px 15px',
+  background: 'rgba(233, 84, 32, 0.15)',
+  borderRadius: '10px',
+  marginBottom: '15px',
+  color: 'white',
+  fontSize: '0.8rem'
+};
+
+const miniSchedule: React.CSSProperties = {
+  display: 'flex',
+  gap: '5px'
+};
+
+const activeDot: React.CSSProperties = { color: '#e95420', fontSize: '1.2rem' };
+const inactiveDot: React.CSSProperties = { color: 'rgba(255,255,255,0.3)', fontSize: '1.2rem' };
 
 export default App;
